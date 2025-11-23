@@ -1,0 +1,1958 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Kavak Monitor - Monitoramento de Vendas</title>
+    
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700;800;900&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+
+    <style>
+        :root {
+            /* Modo escuro como padrão - Azul + Preto */
+            --color-primary: #3B82F6;
+            --color-primary-dark: #2563EB;
+            --color-secondary: #60A5FA;
+            --color-accent: #06B6D4;
+            --color-danger: #EF4444;
+            --color-danger-dark: #DC2626;
+            --color-success: #10B981;
+            --color-warning: #F59E0B;
+            --color-warning-dark: #D97706;
+            --bg-gradient-start: #0F172A;
+            --bg-gradient-mid: #1E293B;
+            --bg-gradient-end: #0C4A6E;
+            --bg-surface: rgba(30, 41, 59, 0.95);
+            --bg-surface-alt: rgba(51, 65, 85, 0.85);
+            --bg-overlay: rgba(0, 0, 0, 0.8);
+            --text-primary: #F1F5F9;
+            --text-secondary: #CBD5E1;
+            --text-muted: #94A3B8;
+            --border-color: rgba(59, 130, 246, 0.2);
+            --shadow-sm: 0 4px 16px rgba(59, 130, 246, 0.15);
+            --shadow-md: 0 8px 32px rgba(59, 130, 246, 0.25);
+            --shadow-lg: 0 16px 64px rgba(59, 130, 246, 0.35);
+            --shadow-xl: 0 24px 96px rgba(59, 130, 246, 0.45);
+        }
+
+        .btn:hover {
+            transform: translateY(-4px) scale(1.02);
+            box-shadow: var(--shadow-lg);
+        }
+
+        .light-mode {
+            /* Modo claro - Branco + Azul */
+            --color-primary: #2563EB;
+            --color-primary-dark: #1D4ED8;
+            --color-secondary: #3B82F6;
+            --color-accent: #0EA5E9;
+            --color-danger: #DC2626;
+            --color-danger-dark: #B91C1C;
+            --color-success: #059669;
+            --color-warning: #D97706;
+            --color-warning-dark: #B45309;
+            --bg-gradient-start: #EFF6FF;
+            --bg-gradient-mid: #DBEAFE;
+            --bg-gradient-end: #BFDBFE;
+            --bg-surface: rgba(255, 255, 255, 0.95);
+            --bg-surface-alt: rgba(249, 250, 251, 0.85);
+            --bg-overlay: rgba(0, 0, 0, 0.5);
+            --text-primary: #1E293B;
+            --text-secondary: #475569;
+            --text-muted: #64748B;
+            --border-color: rgba(37, 99, 235, 0.15);
+            --shadow-sm: 0 4px 16px rgba(37, 99, 235, 0.08);
+            --shadow-md: 0 8px 32px rgba(37, 99, 235, 0.12);
+            --shadow-lg: 0 16px 64px rgba(37, 99, 235, 0.18);
+            --shadow-xl: 0 24px 96px rgba(37, 99, 235, 0.25);
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            background: linear-gradient(135deg, var(--bg-gradient-start) 0%, var(--bg-gradient-mid) 50%, var(--bg-gradient-end) 100%);
+            background-attachment: fixed;
+            min-height: 100vh;
+            padding: 2rem 1.5rem;
+            color: var(--text-primary);
+            transition: all 0.6s cubic-bezier(0.4, 0, 0.2, 1);
+            position: relative;
+            overflow-x: hidden;
+        }
+        
+        body::before {
+            content: '';
+            position: fixed;
+            top: -50%;
+            left: -50%;
+            width: 200%;
+            height: 200%;
+            background: radial-gradient(circle, rgba(255, 255, 255, 0.1) 1px, transparent 1px);
+            background-size: 50px 50px;
+            animation: backgroundMove 60s linear infinite;
+            pointer-events: none;
+            z-index: 0;
+        }
+        
+        @keyframes backgroundMove {
+            0% { transform: translate(0, 0); }
+            100% { transform: translate(50px, 50px); }
+        }
+
+        .container {
+            max-width: 1600px;
+            margin: 0 auto;
+            position: relative;
+            z-index: 1;
+        }
+
+        /* Header */
+        header {
+            text-align: center;
+            color: var(--text-primary);
+            margin-bottom: 3rem;
+            animation: fadeInDown 1s ease-out;
+        }
+
+        @keyframes fadeInDown {
+            from {
+                opacity: 0;
+                transform: translateY(-30px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        header h1 {
+            font-family: 'Poppins', sans-serif;
+            font-size: clamp(2rem, 5vw, 3.5rem);
+            font-weight: 800;
+            margin-bottom: 1rem;
+            background: linear-gradient(135deg, var(--color-primary) 0%, var(--color-secondary) 50%, var(--color-accent) 100%);
+            -webkit-background-clip: text;
+            background-clip: text;
+            -webkit-text-fill-color: transparent;
+            letter-spacing: -0.02em;
+            line-height: 1.1;
+            text-shadow: none;
+            animation: gradientShift 8s ease infinite;
+            background-size: 200% 200%;
+        }
+        
+        @keyframes gradientShift {
+            0%, 100% { background-position: 0% 50%; }
+            50% { background-position: 100% 50%; }
+        }
+
+        header p {
+            font-size: clamp(0.95rem, 1.5vw, 1.1rem);
+            opacity: 0.85;
+            font-weight: 500;
+            max-width: 600px;
+            margin: 0 auto;
+            color: var(--text-primary);
+        }
+
+        /* Stats Bar */
+        .stats-bar {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 1.5rem;
+            margin-bottom: 3rem;
+            animation: fadeInUp 1s ease-out 0.3s both;
+        }
+        
+        @keyframes fadeInUp {
+            from {
+                opacity: 0;
+                transform: translateY(30px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .stat-card {
+            background: var(--bg-surface);
+            backdrop-filter: blur(20px);
+            -webkit-backdrop-filter: blur(20px);
+            padding: 1.5rem 1.25rem;
+            border-radius: 20px;
+            box-shadow: var(--shadow-md);
+            text-align: center;
+            border: 2px solid var(--border-color);
+            transition: all 0.5s cubic-bezier(0.4, 0, 0.2, 1);
+            position: relative;
+            overflow: hidden;
+            cursor: pointer;
+        }
+        
+        .stat-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 6px;
+            background: linear-gradient(90deg, var(--color-primary), var(--color-secondary), var(--color-accent));
+            transform: translateX(-100%);
+            transition: transform 0.6s ease;
+        }
+        
+        .stat-card:hover::before {
+            transform: translateX(0);
+        }
+        
+        .stat-card:hover {
+            transform: translateY(-12px) scale(1.03);
+            box-shadow: var(--shadow-xl);
+            border-color: var(--color-primary);
+        }
+
+        .stat-card h3 {
+            color: var(--text-muted);
+            font-size: 0.75rem;
+            text-transform: uppercase;
+            margin-bottom: 0.75rem;
+            font-weight: 700;
+            letter-spacing: 0.08em;
+        }
+
+        .stat-card .number {
+            font-family: 'Poppins', sans-serif;
+            font-size: 2.5rem;
+            font-weight: 800;
+            background: linear-gradient(135deg, var(--color-primary), var(--color-secondary));
+            -webkit-background-clip: text;
+            background-clip: text;
+            -webkit-text-fill-color: transparent;
+            line-height: 1;
+            transition: transform 0.3s ease;
+        }
+        
+        .stat-card:hover .number {
+            transform: scale(1.1);
+        }
+
+        /* Action Bar */
+        .action-bar {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 2.5rem;
+            flex-wrap: wrap;
+            gap: 1.5rem;
+            animation: fadeInUp 1s ease-out 0.6s both;
+        }
+
+        .btn {
+            padding: 0.75rem 1.5rem;
+            border: none;
+            border-radius: 12px;
+            font-size: 0.9rem;
+            cursor: pointer;
+            transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+            font-weight: 600;
+            background: var(--bg-surface);
+            color: var(--text-primary);
+            border: 2px solid var(--border-color);
+            box-shadow: var(--shadow-sm);
+            backdrop-filter: blur(10px);
+            position: relative;
+            overflow: hidden;
+            font-family: 'Inter', sans-serif;
+        }
+        
+        .btn::before {
+            content: '';
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            width: 0;
+            height: 0;
+            border-radius: 50%;
+            background: rgba(255, 255, 255, 0.3);
+            transform: translate(-50%, -50%);
+            transition: width 0.6s, height 0.6s;
+        }
+        
+        .btn:hover::before {
+            width: 300px;
+            height: 300px;
+        }
+
+        .btn-primary {
+            background: linear-gradient(135deg, var(--color-primary), var(--color-secondary));
+            color: #fff;
+            border: none;
+            box-shadow: var(--shadow-md);
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .btn-primary::after {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(135deg, var(--color-secondary), var(--color-accent));
+            opacity: 0;
+            transition: opacity 0.4s ease;
+        }
+        
+        .btn-primary:hover::after {
+            opacity: 1;
+        }
+        
+        .btn-primary span {
+            position: relative;
+            z-index: 1;
+        }
+
+        .btn-primary:hover {
+            transform: translateY(-4px) scale(1.05);
+            box-shadow: var(--shadow-lg);
+        }
+
+        .theme-toggle {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+            color: var(--text-primary);
+            font-weight: 600;
+            font-family: 'Poppins', sans-serif;
+            background: var(--bg-surface);
+            padding: 0.75rem 1.5rem;
+            border-radius: 50px;
+            backdrop-filter: blur(10px);
+            border: 2px solid var(--border-color);
+            transition: all 0.3s ease;
+        }
+        
+        .theme-toggle:hover {
+            transform: scale(1.05);
+            box-shadow: var(--shadow-md);
+        }
+
+        .switch {
+            position: relative;
+            display: inline-block;
+            width: 60px;
+            height: 32px;
+        }
+
+        .switch input {
+            opacity: 0;
+            width: 0;
+            height: 0;
+        }
+
+        .slider {
+            position: absolute;
+            cursor: pointer;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: linear-gradient(135deg, #E5E7EB, #D1D5DB);
+            transition: 0.4s;
+            border-radius: 34px;
+            box-shadow: inset 0 2px 8px rgba(0, 0, 0, 0.1);
+        }
+
+        .slider:before {
+            position: absolute;
+            content: "";
+            height: 26px;
+            width: 26px;
+            left: 3px;
+            bottom: 3px;
+            background: linear-gradient(135deg, #FFFFFF, #F3F4F6);
+            transition: 0.4s;
+            border-radius: 50%;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+        }
+
+        input:checked + .slider {
+            background: linear-gradient(135deg, var(--color-primary), var(--color-secondary));
+        }
+
+        input:checked + .slider:before {
+            transform: translateX(28px);
+        }
+        
+        input:checked + .slider:after {
+            content: '🌙';
+            position: absolute;
+            left: 8px;
+            top: 50%;
+            transform: translateY(-50%);
+            font-size: 14px;
+        }
+        
+        .slider:after {
+            content: '☀️';
+            position: absolute;
+            right: 8px;
+            top: 50%;
+            transform: translateY(-50%);
+            font-size: 14px;
+        }
+
+        .action-buttons {
+            display: flex;
+            gap: 1rem;
+        }
+
+        .btn-danger {
+            background: linear-gradient(135deg, var(--color-danger), #DC2626);
+            color: #fff;
+            border: none;
+        }
+
+        .btn-danger:hover {
+            background: linear-gradient(135deg, var(--color-danger-dark), #B91C1C);
+            transform: translateY(-4px) scale(1.05);
+            box-shadow: var(--shadow-lg);
+        }
+
+        /* Monitoramentos Grid */
+        .monitoramentos-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+            gap: 1.25rem;
+            margin-bottom: 3rem;
+            animation: fadeInUp 1s ease-out 0.9s both;
+        }
+
+        .monitor-card {
+            background: var(--bg-surface);
+            backdrop-filter: blur(20px);
+            -webkit-backdrop-filter: blur(20px);
+            border-radius: 16px;
+            padding: 1.25rem;
+            box-shadow: var(--shadow-md);
+            transition: box-shadow 0.3s ease, border-color 0.3s ease;
+            position: relative;
+            border: 2px solid var(--border-color);
+            overflow: hidden;
+        }
+        
+        .monitor-card::before {
+            content: '';
+            position: absolute;
+            top: -50%;
+            right: -50%;
+            width: 200%;
+            height: 200%;
+            background: radial-gradient(circle, rgba(59, 130, 246, 0.1) 0%, transparent 70%);
+            opacity: 0;
+            transition: opacity 0.4s ease;
+            pointer-events: none;
+        }
+        
+        .monitor-card:hover::before {
+            opacity: 1;
+        }
+
+        .monitor-card:hover {
+            /* Simplificar hover - apenas sombra e borda, SEM transform para evitar problemas com imagem */
+            box-shadow: var(--shadow-lg);
+            border-color: var(--color-primary);
+        }
+        
+        .card-image {
+            width: 100%;
+            height: 180px;
+            max-width: 100%;
+            max-height: 180px;
+            object-fit: cover;
+            object-position: center;
+            border-radius: 10px;
+            margin-bottom: 0.875rem;
+            box-shadow: var(--shadow-sm);
+            transition: box-shadow 0.3s ease;
+            border: 2px solid var(--border-color);
+            background-color: var(--bg-surface-alt);
+            display: block;
+            /* Melhorar renderização da imagem - evitar pixelização */
+            image-rendering: auto;
+            -webkit-backface-visibility: hidden;
+            backface-visibility: hidden;
+            /* Forçar renderização de alta qualidade sem transform */
+            transform: none !important;
+            -webkit-transform: none !important;
+            will-change: box-shadow;
+            /* Forçar GPU acceleration para melhor qualidade */
+            -webkit-font-smoothing: antialiased;
+            -moz-osx-font-smoothing: grayscale;
+            /* Evitar ampliação excessiva */
+            min-width: 0;
+            min-height: 0;
+            /* Garantir que a imagem não seja afetada por transforms do pai */
+            isolation: isolate;
+            /* Forçar renderização independente */
+            contain: layout style paint;
+            /* Evitar que a imagem seja re-renderizada durante animações */
+            -webkit-transform-style: preserve-3d;
+            transform-style: preserve-3d;
+        }
+        
+        .monitor-card:hover .card-image {
+            /* Apenas mudar sombra, sem nenhum transform para manter qualidade perfeita */
+            box-shadow: var(--shadow-md);
+            /* Garantir que não há transform aplicado - usar !important para sobrescrever qualquer regra */
+            transform: none !important;
+            -webkit-transform: none !important;
+            /* Manter todas as propriedades de isolamento */
+            isolation: isolate !important;
+            contain: layout style paint !important;
+        }
+        
+        .card-image-placeholder {
+            width: 100%;
+            height: 180px;
+            background: linear-gradient(135deg, var(--bg-surface-alt), var(--bg-surface));
+            border-radius: 10px;
+            margin-bottom: 0.875rem;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            border: 2px dashed var(--border-color);
+            color: var(--text-muted);
+            transition: border-color 0.3s ease;
+        }
+        
+        .monitor-card:hover .card-image-placeholder {
+            /* Apenas mudar borda, sem transform para evitar problemas */
+            border-color: var(--color-primary);
+        }
+
+        .status-badge {
+            position: absolute;
+            top: 16px;
+            right: 16px;
+            padding: 0.5rem 1rem;
+            border-radius: 50px;
+            font-size: 0.7rem;
+            font-weight: 800;
+            text-transform: uppercase;
+            letter-spacing: 0.08em;
+            z-index: 10;
+            backdrop-filter: blur(10px);
+            box-shadow: var(--shadow-sm);
+            animation: bounceIn 0.6s ease;
+        }
+        
+        @keyframes bounceIn {
+            0% { transform: scale(0); }
+            50% { transform: scale(1.1); }
+            100% { transform: scale(1); }
+        }
+
+        .status-ativo {
+            background: linear-gradient(135deg, var(--color-primary), var(--color-primary-dark));
+            color: #fff;
+        }
+
+        .status-vendido {
+            background: linear-gradient(135deg, var(--color-success), #059669);
+            color: #fff;
+        }
+
+        .status-expirado {
+            background: linear-gradient(135deg, var(--color-danger), var(--color-danger-dark));
+            color: #fff;
+        }
+
+        .card-link {
+            margin-top: 0.75rem;
+            margin-bottom: 1rem;
+        }
+
+        .card-link a {
+            color: var(--color-primary);
+            text-decoration: none;
+            font-size: 0.9rem;
+            font-weight: 600;
+            word-break: break-all;
+            display: inline-flex;
+            align-items: center;
+            gap: 0.4rem;
+            transition: all 0.3s ease;
+            position: relative;
+        }
+        
+        .card-link a::after {
+            content: '→';
+            transition: transform 0.3s ease;
+        }
+
+        .card-link a:hover {
+            color: var(--color-secondary);
+            transform: translateX(5px);
+        }
+        
+        .card-link a:hover::after {
+            transform: translateX(5px);
+        }
+
+        .card-info {
+            margin: 1.25rem 0;
+            background: var(--bg-surface-alt);
+            padding: 1rem;
+            border-radius: 12px;
+            border: 1px solid var(--border-color);
+        }
+
+        .card-info-row {
+            display: flex;
+            justify-content: space-between;
+            margin: 0.75rem 0;
+            font-size: 0.9rem;
+        }
+        
+        .card-info-row:first-child {
+            margin-top: 0;
+        }
+        
+        .card-info-row:last-child {
+            margin-bottom: 0;
+        }
+
+        .card-info-label {
+            color: var(--text-muted);
+            font-weight: 600;
+            font-size: 0.85rem;
+        }
+
+        .card-info-value {
+            color: var(--text-primary);
+            font-weight: 700;
+            font-size: 0.9rem;
+        }
+
+        .dias-restantes {
+            text-align: center;
+            margin: 1.25rem 0;
+            padding: 1rem;
+            background: var(--bg-surface-alt);
+            border-radius: 12px;
+            border: 2px solid var(--border-color);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .dias-numero {
+            font-family: 'Poppins', sans-serif;
+            font-size: 2.5rem;
+            font-weight: 800;
+            margin-bottom: 0.4rem;
+            line-height: 1;
+        }
+
+        .dias-numero.green {
+            color: var(--color-success);
+        }
+
+        .dias-numero.orange {
+            color: var(--color-warning);
+        }
+
+        .dias-numero.red {
+            color: var(--color-danger);
+        }
+
+        .dias-label {
+            color: var(--text-muted);
+            font-size: 0.85rem;
+            text-transform: uppercase;
+            font-weight: 600;
+            letter-spacing: 0.1em;
+        }
+
+        .card-actions {
+            margin-top: 1.25rem;
+            text-align: center;
+            display: flex;
+            gap: 1rem;
+            justify-content: center;
+            flex-wrap: wrap;
+        }
+
+        .btn-small {
+            padding: 0.75rem 1.5rem;
+            font-size: 0.9rem;
+            flex: 1;
+            min-width: 120px;
+        }
+
+        /* Modal */
+        .modal {
+            display: none;
+            position: fixed;
+            z-index: 1000;
+            left: 0;
+            top: 0;
+            width: 100%;
+            height: 100%;
+            background: var(--bg-overlay);
+            backdrop-filter: blur(10px);
+            -webkit-backdrop-filter: blur(10px);
+            animation: fadeIn 0.3s ease;
+        }
+        
+        @keyframes fadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
+
+        .modal.active {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .modal-content {
+            background: var(--bg-surface);
+            backdrop-filter: blur(20px);
+            -webkit-backdrop-filter: blur(20px);
+            border-radius: 32px;
+            padding: 3rem;
+            max-width: 600px;
+            width: 90%;
+            max-height: 90vh;
+            overflow-y: auto;
+            box-shadow: var(--shadow-xl);
+            border: 2px solid var(--border-color);
+            animation: modalSlideUp 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+            position: relative;
+        }
+        
+        @keyframes modalSlideUp {
+            from {
+                opacity: 0;
+                transform: translateY(50px) scale(0.9);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0) scale(1);
+            }
+        }
+        
+        .modal-content::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 6px;
+            background: linear-gradient(90deg, var(--color-primary), var(--color-secondary), var(--color-accent));
+            border-radius: 32px 32px 0 0;
+        }
+
+        .modal-header {
+            margin-bottom: 2.5rem;
+            margin-top: 1rem;
+        }
+
+        .modal-header h2 {
+            font-family: 'Poppins', sans-serif;
+            color: var(--text-primary);
+            margin-bottom: 0.75rem;
+            font-size: 2rem;
+            font-weight: 800;
+            background: linear-gradient(135deg, var(--color-primary), var(--color-secondary));
+            -webkit-background-clip: text;
+            background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        .modal-header p {
+            color: var(--text-secondary);
+            font-size: 1rem;
+            line-height: 1.6;
+        }
+
+        .form-group {
+            margin-bottom: 2rem;
+        }
+
+        .form-group label {
+            display: block;
+            margin-bottom: 0.75rem;
+            color: var(--text-primary);
+            font-weight: 700;
+            font-size: 1rem;
+            font-family: 'Poppins', sans-serif;
+        }
+
+        .form-group input,
+        .form-group select {
+            width: 100%;
+            padding: 1rem 1.25rem;
+            border: 2px solid var(--border-color);
+            border-radius: 16px;
+            font-size: 1rem;
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            background: var(--bg-surface-alt);
+            color: var(--text-primary);
+            font-family: 'Inter', sans-serif;
+            backdrop-filter: blur(10px);
+        }
+
+        .form-group input:focus,
+        .form-group select:focus {
+            outline: none;
+            border-color: var(--color-primary);
+            box-shadow: 0 0 0 4px rgba(139, 92, 246, 0.1);
+            transform: translateY(-2px);
+            background: var(--bg-surface);
+        }
+        
+        .form-group input:hover,
+        .form-group select:hover {
+            border-color: var(--color-primary);
+        }
+
+        .form-group small {
+            display: block;
+            margin-top: 0.5rem;
+            color: var(--text-muted);
+            font-size: 0.9rem;
+            line-height: 1.5;
+        }
+        
+        .form-group small a {
+            color: var(--color-primary);
+            text-decoration: none;
+            font-weight: 600;
+            transition: color 0.3s ease;
+        }
+        
+        .form-group small a:hover {
+            color: var(--color-secondary);
+            text-decoration: underline;
+        }
+
+        .modal-actions {
+            display: flex;
+            gap: 1rem;
+            margin-top: 3rem;
+        }
+
+        .modal-actions .btn {
+            flex: 1;
+        }
+
+        /* Empty State */
+        .empty-state {
+            text-align: center;
+            padding: 5rem 3rem;
+            background: var(--bg-surface);
+            backdrop-filter: blur(20px);
+            border-radius: 32px;
+            box-shadow: var(--shadow-lg);
+            border: 2px solid var(--border-color);
+            animation: fadeInUp 0.6s ease;
+        }
+
+        .empty-state svg {
+            width: 120px;
+            height: 120px;
+            margin-bottom: 2rem;
+            opacity: 0.4;
+            filter: drop-shadow(0 4px 12px rgba(139, 92, 246, 0.3));
+        }
+
+        .empty-state h3 {
+            font-family: 'Poppins', sans-serif;
+            color: var(--text-primary);
+            margin-bottom: 1rem;
+            font-size: 1.8rem;
+            font-weight: 800;
+        }
+
+        .empty-state p {
+            color: var(--text-secondary);
+            margin-bottom: 2.5rem;
+            font-size: 1.1rem;
+            line-height: 1.6;
+        }
+
+        /* Loading */
+        .loading {
+            text-align: center;
+            padding: 5rem 3rem;
+            color: var(--text-primary);
+            animation: fadeIn 0.3s ease;
+        }
+
+        .spinner {
+            border: 5px solid rgba(139, 92, 246, 0.2);
+            border-top: 5px solid var(--color-primary);
+            border-radius: 50%;
+            width: 60px;
+            height: 60px;
+            animation: spin 0.8s linear infinite;
+            margin: 0 auto 2rem;
+        }
+
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+        
+        .loading p {
+            font-size: 1.1rem;
+            font-weight: 600;
+            color: var(--text-secondary);
+        }
+
+        /* Footer */
+        footer {
+            text-align: center;
+            color: var(--text-primary);
+            padding: 4rem 2rem;
+            opacity: 0.75;
+            margin-top: 6rem;
+            font-size: 1rem;
+        }
+
+        footer a {
+            color: var(--color-primary);
+            text-decoration: none;
+            font-weight: 700;
+            transition: all 0.3s ease;
+        }
+
+        footer a:hover {
+            color: var(--color-secondary);
+            transform: translateY(-2px);
+        }
+        
+        /* Modal de Confirmação de Deleção */
+        .delete-modal {
+            display: none;
+            position: fixed;
+            z-index: 2000;
+            left: 0;
+            top: 0;
+            width: 100%;
+            height: 100%;
+            background: var(--bg-overlay);
+            backdrop-filter: blur(10px);
+            -webkit-backdrop-filter: blur(10px);
+            animation: fadeIn 0.3s ease;
+        }
+        
+        .delete-modal.active {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        
+        .delete-modal-content {
+            background: var(--bg-surface);
+            backdrop-filter: blur(20px);
+            -webkit-backdrop-filter: blur(20px);
+            border-radius: 24px;
+            padding: 2.5rem;
+            max-width: 450px;
+            width: 90%;
+            box-shadow: var(--shadow-xl);
+            border: 2px solid var(--border-color);
+            animation: modalSlideUp 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+            position: relative;
+            text-align: center;
+        }
+        
+        .delete-modal-content::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 6px;
+            background: linear-gradient(90deg, var(--color-danger), #DC2626);
+            border-radius: 24px 24px 0 0;
+        }
+        
+        .delete-icon {
+            font-size: 4rem;
+            margin-bottom: 1rem;
+            animation: shake 0.5s ease;
+        }
+        
+        @keyframes shake {
+            0%, 100% { transform: translateX(0); }
+            25% { transform: translateX(-10px) rotate(-5deg); }
+            75% { transform: translateX(10px) rotate(5deg); }
+        }
+        
+        .delete-modal h3 {
+            font-family: 'Poppins', sans-serif;
+            color: var(--text-primary);
+            margin-bottom: 1rem;
+            font-size: 1.5rem;
+            font-weight: 700;
+        }
+        
+        .delete-modal p {
+            color: var(--text-secondary);
+            margin-bottom: 1.5rem;
+            line-height: 1.6;
+        }
+        
+        .verification-code {
+            background: var(--bg-surface-alt);
+            border: 2px solid var(--color-danger);
+            border-radius: 12px;
+            padding: 1rem;
+            margin: 1.5rem 0;
+            font-family: 'Courier New', monospace;
+            font-size: 2rem;
+            font-weight: bold;
+            letter-spacing: 0.3em;
+            color: var(--color-danger);
+            user-select: all;
+        }
+        
+        .delete-input-group {
+            margin: 1.5rem 0;
+        }
+        
+        .delete-input-group label {
+            display: block;
+            margin-bottom: 0.5rem;
+            color: var(--text-secondary);
+            font-weight: 600;
+            font-size: 0.9rem;
+        }
+        
+        .delete-input-group input {
+            width: 100%;
+            padding: 0.75rem;
+            border: 2px solid var(--border-color);
+            border-radius: 12px;
+            font-size: 1.2rem;
+            text-align: center;
+            font-family: 'Courier New', monospace;
+            letter-spacing: 0.2em;
+            background: var(--bg-surface-alt);
+            color: var(--text-primary);
+            transition: all 0.3s ease;
+        }
+        
+        .delete-input-group input:focus {
+            outline: none;
+            border-color: var(--color-danger);
+            box-shadow: 0 0 0 4px rgba(239, 68, 68, 0.1);
+        }
+        
+        .delete-input-group input.error {
+            border-color: var(--color-danger);
+            animation: headShake 0.5s ease;
+        }
+        
+        @keyframes headShake {
+            0% { transform: translateX(0); }
+            25% { transform: translateX(-10px); }
+            50% { transform: translateX(10px); }
+            75% { transform: translateX(-5px); }
+            100% { transform: translateX(0); }
+        }
+        
+        .delete-modal-actions {
+            display: flex;
+            gap: 1rem;
+            margin-top: 2rem;
+        }
+        
+        .delete-modal-actions .btn {
+            flex: 1;
+        }
+
+        /* Melhorar qualidade em telas de alta resolução - usar interpolação suave */
+        @media (-webkit-min-device-pixel-ratio: 2), (min-resolution: 192dpi) {
+            .card-image {
+                /* Para telas Retina/4K, usar renderização automática mas com suavização */
+                image-rendering: auto;
+                -webkit-font-smoothing: antialiased;
+            }
+        }
+
+        /* Responsivo */
+        @media (max-width: 768px) {
+            body {
+                padding: 2rem 1rem;
+            }
+            
+            header {
+                margin-bottom: 4rem;
+            }
+
+            header h1 {
+                font-size: clamp(2rem, 10vw, 3rem);
+            }
+            
+            header p {
+                font-size: 1rem;
+            }
+            
+            .stats-bar {
+                grid-template-columns: 1fr;
+                gap: 1.5rem;
+                margin-bottom: 4rem;
+            }
+            
+            .stat-card {
+                padding: 2rem 1.5rem;
+            }
+            
+            .action-bar {
+                flex-direction: column;
+                align-items: stretch;
+                gap: 1.5rem;
+                margin-bottom: 4rem;
+            }
+            
+            .action-buttons {
+                flex-direction: column;
+            }
+            
+            .theme-toggle {
+                justify-content: center;
+            }
+
+            .monitoramentos-grid {
+                grid-template-columns: 1fr;
+                gap: 2rem;
+                margin-bottom: 4rem;
+            }
+            
+            .monitor-card {
+                padding: 2rem;
+            }
+            
+            .dias-numero {
+                font-size: 4rem;
+            }
+
+            .modal-content {
+                padding: 2rem;
+                border-radius: 24px;
+            }
+            
+            .modal-header h2 {
+                font-size: 1.5rem;
+            }
+            
+            .modal-actions {
+                flex-direction: column;
+            }
+            
+            .empty-state {
+                padding: 3rem 2rem;
+            }
+            
+            .empty-state svg {
+                width: 80px;
+                height: 80px;
+            }
+        }
+        
+        /* Scrollbar personalizado */
+        ::-webkit-scrollbar {
+            width: 12px;
+        }
+        
+        ::-webkit-scrollbar-track {
+            background: var(--bg-gradient-start);
+        }
+        
+        ::-webkit-scrollbar-thumb {
+            background: linear-gradient(135deg, var(--color-primary), var(--color-secondary));
+            border-radius: 10px;
+        }
+        
+        ::-webkit-scrollbar-thumb:hover {
+            background: linear-gradient(135deg, var(--color-secondary), var(--color-accent));
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <!-- Header -->
+        <header>
+            <h1>Kavak Monitor</h1>
+            <p>Sistema de Monitoramento de Vendas de Carros</p>
+        </header>
+
+        <!-- Stats Bar -->
+        <div class="stats-bar">
+            <div class="stat-card">
+                <h3>Ativos</h3>
+                <div class="number" id="stat-ativos">-</div>
+            </div>
+            <div class="stat-card">
+                <h3>Vendidos</h3>
+                <div class="number" id="stat-vendidos">-</div>
+            </div>
+            <div class="stat-card">
+                <h3>Expirados</h3>
+                <div class="number" id="stat-expirados">-</div>
+            </div>
+        </div>
+
+        <!-- Action Bar -->
+        <div class="action-bar">
+            <div class="action-buttons">
+                <button class="btn btn-primary" onclick="abrirModal()">
+                    <span>+ Novo Monitoramento</span>
+                </button>
+                <button class="btn" onclick="carregarMonitoramentos(true)" id="btn-atualizar">
+                    <span id="btn-atualizar-text">🔄 Atualizar</span>
+                </button>
+                <small id="ultima-atualizacao" style="color: var(--text-muted); margin-left: 1rem; font-size: 0.85rem;"></small>
+            </div>
+            <div class="theme-toggle">
+                <label class="switch">
+                    <input type="checkbox" id="theme-switch" />
+                    <span class="slider"></span>
+                </label>
+                <span id="theme-label">Modo claro</span>
+            </div>
+        </div>
+
+        <!-- Monitoramentos Grid -->
+        <div id="monitoramentos-container">
+            <div class="loading">
+                <div class="spinner"></div>
+                <p>Carregando monitoramentos...</p>
+            </div>
+        </div>
+
+    <!-- Modal -->
+    <div id="modal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2>Novo Monitoramento</h2>
+                <p>Preencha os dados para começar a monitorar seu carro</p>
+            </div>
+
+            <form id="form-monitoramento" onsubmit="criarMonitoramento(event)">
+                <div class="form-group">
+                    <label for="link_carro">Link do Carro na Kavak *</label>
+                    <input
+                        type="url"
+                        id="link_carro"
+                        name="link_carro"
+                        placeholder="https://www.kavak.com/br/comprar/..."
+                        required
+                    >
+                    <small>Cole aqui o link completo do seu carro na plataforma Kavak</small>
+                </div>
+
+                <div class="form-group">
+                    <label for="data_venda">Data da Venda *</label>
+                    <input
+                        type="date"
+                        id="data_venda"
+                        name="data_venda"
+                        required
+                    >
+                    <small>Data em que o carro foi vendido para a Kavak</small>
+                </div>
+
+                <div class="form-group">
+                    <label for="tipo_notificacao">Tipo de Notificação *</label>
+                    <select
+                        id="tipo_notificacao"
+                        name="tipo_notificacao"
+                        required
+                    >
+                        <option value="telegram">Telegram</option>
+                    </select>
+                </div>
+
+                <div class="form-group">
+                    <label for="contato">Chat ID do Telegram *</label>
+                    <input
+                        type="text"
+                        id="contato"
+                        name="contato"
+                        placeholder="123456789"
+                        required
+                    >
+                    <small>
+                        <a href="guia_telegram.html" target="_blank">Como descobrir meu Chat ID do Telegram?</a>
+                    </small>
+                </div>
+
+                <div class="modal-actions">
+                    <button type="button" class="btn" onclick="fecharModal()">
+                        <span>Cancelar</span>
+                    </button>
+                    <button type="submit" class="btn btn-primary">
+                        <span>✨ Criar Monitoramento</span>
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- Modal de Confirmação de Deleção -->
+    <div id="delete-modal" class="delete-modal">
+        <div class="delete-modal-content">
+            <div class="delete-icon">⚠️</div>
+            <h3>Confirmar Exclusão</h3>
+            <p>Esta ação é irreversível! Digite o código abaixo para confirmar:</p>
+            
+            <div class="verification-code" id="verification-code">----</div>
+            
+            <div class="delete-input-group">
+                <label for="delete-code-input">Digite o código:</label>
+                <input 
+                    type="text" 
+                    id="delete-code-input" 
+                    maxlength="4" 
+                    placeholder="----"
+                    autocomplete="off"
+                >
+            </div>
+            
+            <div class="delete-modal-actions">
+                <button class="btn" onclick="fecharModalDeletar()">
+                    <span>Cancelar</span>
+                </button>
+                <button class="btn btn-danger" onclick="confirmarDeletar()">
+                    <span>🗑️ Deletar</span>
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Configuração da API
+        const API_URL = '/api';
+
+        // Auto-refresh a cada 60 segundos
+        let autoRefreshInterval;
+
+        // Inicialização
+        document.addEventListener('DOMContentLoaded', () => {
+            // Carregar dados iniciais
+            carregarMonitoramentos();
+            carregarEstatisticas();
+
+            // Configurar data padrão como hoje
+            const hoje = new Date().toISOString().split('T')[0];
+            document.getElementById('data_venda').value = hoje;
+
+            // Auto-refresh - atualizar a cada 30 segundos para ver mudanças mais rapidamente
+            autoRefreshInterval = setInterval(() => {
+                carregarMonitoramentos();
+                carregarEstatisticas();
+            }, 30000); // 30 segundos (os dias só mudam à meia-noite, mas atualiza estatísticas e dados)
+
+            // Configurar o tema inicial
+            inicializarTema();
+        });
+
+        // Função para animar contador
+        function animateCounter(element, targetValue, duration = 1000) {
+            const startValue = parseInt(element.textContent) || 0;
+            const startTime = performance.now();
+            
+            function update(currentTime) {
+                const elapsed = currentTime - startTime;
+                const progress = Math.min(elapsed / duration, 1);
+                
+                // Easing function (easeOutExpo)
+                const easeProgress = progress === 1 ? 1 : 1 - Math.pow(2, -10 * progress);
+                
+                const currentValue = Math.floor(startValue + (targetValue - startValue) * easeProgress);
+                element.textContent = currentValue;
+                
+                if (progress < 1) {
+                    requestAnimationFrame(update);
+                } else {
+                    element.textContent = targetValue;
+                }
+            }
+            
+            requestAnimationFrame(update);
+        }
+        
+        // Carregar estatísticas
+        async function carregarEstatisticas() {
+            try {
+                const response = await fetch(`${API_URL}/stats`);
+                const data = await response.json();
+
+                // Animar os contadores
+                animateCounter(document.getElementById('stat-ativos'), data.ativos);
+                animateCounter(document.getElementById('stat-vendidos'), data.vendidos);
+                animateCounter(document.getElementById('stat-expirados'), data.expirados);
+            } catch (error) {
+                console.error('Erro ao carregar estatísticas:', error);
+            }
+        }
+
+        // Carregar monitoramentos
+        async function carregarMonitoramentos(manual = false) {
+            const container = document.getElementById('monitoramentos-container');
+            const btnAtualizar = document.getElementById('btn-atualizar');
+            const btnAtualizarText = document.getElementById('btn-atualizar-text');
+            const ultimaAtualizacao = document.getElementById('ultima-atualizacao');
+
+            // Feedback visual durante atualização
+            if (manual && btnAtualizar) {
+                btnAtualizar.disabled = true;
+                btnAtualizarText.textContent = '⏳ Atualizando...';
+            }
+
+            try {
+                const response = await fetch(`${API_URL}/monitoramentos`);
+                const data = await response.json();
+
+                if (data.monitoramentos.length === 0) {
+                    container.innerHTML = `
+                        <div class="empty-state">
+                            <svg fill="currentColor" viewBox="0 0 20 20">
+                                <path d="M9 2a1 1 0 000 2h2a1 1 0 100-2H9z"/>
+                                <path fill-rule="evenodd" d="M4 5a2 2 0 012-2 3 3 0 003 3h2a3 3 0 003-3 2 2 0 012 2v11a2 2 0 01-2 2H6a2 2 0 01-2-2V5zm3 4a1 1 0 000 2h.01a1 1 0 100-2H7zm3 0a1 1 0 000 2h3a1 1 0 100-2h-3zm-3 4a1 1 0 100 2h.01a1 1 0 100-2H7zm3 0a1 1 0 100 2h3a1 1 0 100-2h-3z" clip-rule="evenodd"/>
+                            </svg>
+                            <h3>Nenhum monitoramento ainda</h3>
+                            <p>Clique em "Novo Monitoramento" para começar</p>
+                            <button class="btn btn-primary" onclick="abrirModal()">
+                                <span>✨ Criar Primeiro Monitoramento</span>
+                            </button>
+                        </div>
+                    `;
+                    return;
+                }
+
+                const grid = document.createElement('div');
+                grid.className = 'monitoramentos-grid';
+
+                data.monitoramentos.forEach(mon => {
+                    grid.appendChild(criarCardMonitoramento(mon));
+                });
+
+                container.innerHTML = '';
+                container.appendChild(grid);
+                
+                // Atualizar indicador de última atualização
+                if (ultimaAtualizacao) {
+                    const agora = new Date();
+                    const hora = agora.toLocaleTimeString('pt-BR', { hour: '2-digit', minute: '2-digit', second: '2-digit' });
+                    ultimaAtualizacao.textContent = `Atualizado às ${hora}`;
+                }
+            } catch (error) {
+                console.error('Erro ao carregar monitoramentos:', error);
+                container.innerHTML = `
+                    <div class="empty-state">
+                        <h3>Erro ao carregar dados</h3>
+                        <p>Não foi possível conectar ao servidor</p>
+                        <button class="btn btn-primary" onclick="carregarMonitoramentos(true)">
+                            <span>🔄 Tentar Novamente</span>
+                        </button>
+                    </div>
+                `;
+            } finally {
+                // Restaurar botão após carregamento (manual ou automático)
+                if (manual && btnAtualizar && btnAtualizarText) {
+                    btnAtualizar.disabled = false;
+                    btnAtualizarText.textContent = '🔄 Atualizar';
+                }
+            }
+        }
+
+        // Criar card de monitoramento
+        function criarCardMonitoramento(mon) {
+            const card = document.createElement('div');
+            card.className = 'monitor-card';
+
+            // Determinar cor dos dias restantes
+            let diasCor = 'green';
+            if (mon.dias_restantes <= 5 && mon.dias_restantes > 0) {
+                diasCor = 'orange';
+            } else if (mon.dias_restantes <= 0) {
+                diasCor = 'red';
+            }
+
+            // Status badge
+            let statusClass = 'status-ativo';
+            let statusText = 'Ativo';
+            if (mon.carro_vendido) {
+                statusClass = 'status-vendido';
+                statusText = 'Vendido';
+            } else if (mon.status === 'expirado') {
+                statusClass = 'status-expirado';
+                statusText = 'Expirado';
+            }
+
+            // Data formatada - com validação
+            let dataFormatada = 'Data não disponível';
+            let prazoFinalFormatado = 'Data não disponível';
+            const PRAZO_DAYS = 45; // 45 dias corridos conforme documentação
+            
+            try {
+                if (mon.data_venda) {
+                    // Tentar diferentes formatos de data
+                    let dataVenda;
+                    if (mon.data_venda.includes('T')) {
+                        dataVenda = new Date(mon.data_venda);
+                    } else {
+                        dataVenda = new Date(mon.data_venda + 'T00:00:00');
+                    }
+                    
+                    if (!isNaN(dataVenda.getTime())) {
+                        dataFormatada = dataVenda.toLocaleDateString('pt-BR');
+                        
+                        // Calcular prazo final (data_venda + 45 dias)
+                        const prazoFinal = new Date(dataVenda);
+                        prazoFinal.setDate(prazoFinal.getDate() + PRAZO_DAYS);
+                        prazoFinalFormatado = prazoFinal.toLocaleDateString('pt-BR');
+                    }
+                }
+            } catch (e) {
+                console.error('Erro ao formatar data:', e, mon.data_venda);
+            }
+            
+            // HTML da imagem com tratamento robusto de erro
+            let imageHtml = '';
+            const imageId = `img-${mon.id}`;
+            const placeholderId = `placeholder-${mon.id}`;
+            
+            // Função para validar se a URL parece válida
+            function isValidImageUrl(url) {
+                // Tratar null, undefined, ou valores inválidos
+                if (url === null || url === undefined) return false;
+                if (typeof url !== 'string') return false;
+                
+                const trimmed = url.trim();
+                
+                // Verificar strings que representam valores nulos
+                if (!trimmed || 
+                    trimmed === '' || 
+                    trimmed.toLowerCase() === 'null' || 
+                    trimmed.toLowerCase() === 'none' || 
+                    trimmed.toLowerCase() === 'undefined' ||
+                    trimmed === 'NULL' ||
+                    trimmed === 'None') {
+                    return false;
+                }
+                
+                // Verificar se parece uma URL válida
+                // Deve ter pelo menos http ou https e ser razoavelmente longa
+                if (trimmed.length < 10) return false;
+                
+                // Tentar validar como URL absoluta
+                try {
+                    const urlObj = new URL(trimmed);
+                    return (urlObj.protocol === 'http:' || urlObj.protocol === 'https:') && 
+                           urlObj.hostname.length > 0;
+                } catch (e) {
+                    // Se não for URL absoluta válida, verificar se parece URL
+                    // (contém http/https e domínio)
+                    return (trimmed.startsWith('http://') || trimmed.startsWith('https://')) &&
+                           trimmed.length > 15; // URLs válidas são geralmente mais longas
+                }
+            }
+            
+            if (isValidImageUrl(mon.image_url)) {
+                const imageUrl = mon.image_url.trim();
+                
+                imageHtml = `
+                    <img 
+                        id="${imageId}"
+                        src="${imageUrl}" 
+                        alt="Foto do carro" 
+                        class="card-image" 
+                        loading="lazy"
+                        decoding="async"
+                        onload="
+                            const img = this;
+                            const placeholder = document.getElementById('${placeholderId}');
+                            // Forçar renderização de alta qualidade - SEM transform para evitar distorção
+                            img.style.imageRendering = 'auto';
+                            img.style.webkitBackfaceVisibility = 'hidden';
+                            img.style.backfaceVisibility = 'hidden';
+                            // NÃO aplicar nenhum transform - deixar CSS controlar
+                            img.style.webkitTransform = 'none';
+                            img.style.transform = 'none';
+                            img.style.display='block';
+                            img.style.opacity='1';
+                            if(placeholder) placeholder.style.display='none';
+                            // Remover timeout se a imagem carregou
+                            if(window.imageTimeout_${mon.id}) {
+                                clearTimeout(window.imageTimeout_${mon.id});
+                                delete window.imageTimeout_${mon.id};
+                            }
+                        "
+                        onerror="
+                            console.error('❌ Erro ao carregar imagem:', this.src, this.naturalWidth, this.naturalHeight);
+                            this.style.display='none';
+                            this.style.opacity='0';
+                            const placeholder = document.getElementById('${placeholderId}');
+                            if(placeholder) {
+                                placeholder.style.display='flex';
+                            }
+                            // Remover timeout se houve erro
+                            if(window.imageTimeout_${mon.id}) {
+                                clearTimeout(window.imageTimeout_${mon.id});
+                                delete window.imageTimeout_${mon.id};
+                            }
+                        "
+                        style="display:block; opacity:0; transition: opacity 0.3s ease;"
+                    >
+                    <div id="${placeholderId}" class="card-image-placeholder" style="display:none;">
+                        <div style="text-align: center;">
+                            <span style="font-size: 3rem; display: block; margin-bottom: 0.5rem;">🚗</span>
+                            <small style="font-size: 0.85rem; color: var(--text-muted);">Imagem não disponível</small>
+                        </div>
+                    </div>
+                `;
+            } else {
+                imageHtml = `
+                    <div id="${placeholderId}" class="card-image-placeholder">
+                        <div style="text-align: center;">
+                            <span style="font-size: 3rem; display: block; margin-bottom: 0.5rem;">🚗</span>
+                            <small style="font-size: 0.85rem; color: var(--text-muted);">Imagem não disponível</small>
+                        </div>
+                    </div>
+                `;
+            }
+
+            card.innerHTML = `
+                <span class="status-badge ${statusClass}">${statusText}</span>
+                
+                ${imageHtml}
+
+                <div class="card-link">
+                    <a href="${mon.link_carro}" target="_blank" rel="noopener">
+                        Ver carro na Kavak
+                    </a>
+                </div>
+
+                <div class="card-info">
+                    <div class="card-info-row">
+                        <span class="card-info-label">Data da Venda:</span>
+                        <span class="card-info-value">${dataFormatada}</span>
+                    </div>
+                    <div class="card-info-row">
+                        <span class="card-info-label">Prazo Final:</span>
+                        <span class="card-info-value">${prazoFinalFormatado}</span>
+                    </div>
+                    <div class="card-info-row">
+                        <span class="card-info-label">Notificação:</span>
+                        <span class="card-info-value">Telegram</span>
+                    </div>
+                </div>
+
+                <div class="dias-restantes">
+                    <div class="dias-numero ${diasCor}">${mon.dias_restantes}</div>
+                    <div class="dias-label">dias restantes</div>
+                </div>
+
+                <div class="card-actions">
+                    <button class="btn btn-danger btn-small" onclick="deletarMonitoramento(${mon.id})">
+                        <span>🗑️ Deletar</span>
+                    </button>
+                </div>
+            `;
+
+            // Configurar timeout de fallback para imagens que demoram muito para carregar
+            if (isValidImageUrl(mon.image_url)) {
+                // Usar setTimeout para garantir que o DOM foi renderizado
+                setTimeout(() => {
+                    const imgElement = document.getElementById(imageId);
+                    const placeholderElement = document.getElementById(placeholderId);
+                    
+                    if (imgElement && placeholderElement) {
+                        // Timeout de 10 segundos - se a imagem não carregar, mostrar placeholder
+                        window[`imageTimeout_${mon.id}`] = setTimeout(() => {
+                            // Verificar se a imagem realmente não carregou (não tem width/height ou está escondida)
+                            if (imgElement.complete === false || 
+                                (imgElement.naturalWidth === 0 && imgElement.naturalHeight === 0) ||
+                                imgElement.style.display === 'none') {
+                                console.warn(`⏱️ Timeout ao carregar imagem para monitoramento ${mon.id}`);
+                                imgElement.style.display = 'none';
+                                placeholderElement.style.display = 'flex';
+                            }
+                            delete window[`imageTimeout_${mon.id}`];
+                        }, 10000); // 10 segundos
+                    }
+                }, 100);
+            }
+
+            return card;
+        }
+
+        // Modal
+        function abrirModal() {
+            document.getElementById('modal').classList.add('active');
+            document.getElementById('form-monitoramento').reset();
+            const hoje = new Date().toISOString().split('T')[0];
+            document.getElementById('data_venda').value = hoje;
+        }
+
+        function fecharModal() {
+            document.getElementById('modal').classList.remove('active');
+        }
+
+        // Fechar modal ao clicar fora
+        document.getElementById('modal').addEventListener('click', (e) => {
+            if (e.target.id === 'modal') {
+                fecharModal();
+            }
+        });
+
+        // Atualizar imagem de um monitoramento específico
+        async function atualizarImagemIndividual(monId) {
+            // Encontrar o botão clicado
+            const buttons = document.querySelectorAll(`button[onclick="atualizarImagemIndividual(${monId})"]`);
+            const btn = buttons[0];
+            if (!btn) return;
+            
+            const originalText = btn.innerHTML;
+            btn.disabled = true;
+            btn.innerHTML = '<span>⏳ Atualizando...</span>';
+
+            try {
+                const response = await fetch(`${API_URL}/monitoramentos/${monId}/update-image`, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    }
+                });
+
+                const data = await response.json();
+
+                if (response.ok) {
+                    if (data.success && data.image_url) {
+                        // Recarregar apenas esse card ou todos os monitoramentos
+                        carregarMonitoramentos();
+                        // Mostrar feedback visual
+                        alert('✅ Imagem atualizada com sucesso!');
+                    } else {
+                        alert('⚠️ Não foi possível extrair a imagem. O link pode estar inválido ou o carro pode ter sido removido.');
+                    }
+                } else {
+                    alert(`Erro: ${data.error || 'Não foi possível atualizar a imagem'}`);
+                }
+            } catch (error) {
+                console.error('Erro ao atualizar imagem:', error);
+                alert('Erro ao atualizar imagem. Verifique sua conexão e tente novamente.');
+            } finally {
+                btn.disabled = false;
+                btn.innerHTML = originalText;
+            }
+        }
+
+        // Criar monitoramento
+        async function criarMonitoramento(event) {
+            event.preventDefault();
+
+            const btn = event.target.querySelector('button[type="submit"]');
+            btn.disabled = true;
+            btn.innerHTML = '<span>⏳ Criando...</span>';
+
+            try {
+                // Validar link Kavak
+                const link = document.getElementById('link_carro').value;
+                if (!link.toLowerCase().includes('kavak.com')) {
+                    alert('O link deve ser da plataforma Kavak (kavak.com)');
+                    btn.disabled = false;
+                    btn.innerHTML = '<span>✨ Criar Monitoramento</span>';
+                    return;
+                }
+
+                // Validar data
+                const dataVenda = new Date(document.getElementById('data_venda').value + 'T00:00:00');
+                const hoje = new Date();
+                hoje.setHours(0, 0, 0, 0);
+
+                if (dataVenda > hoje) {
+                    alert('A data da venda não pode ser no futuro');
+                    btn.disabled = false;
+                    btn.innerHTML = '<span>✨ Criar Monitoramento</span>';
+                    return;
+                }
+
+                // Enviar dados
+                const formData = {
+                    link_carro: link,
+                    data_venda: document.getElementById('data_venda').value,
+                    tipo_notificacao: document.getElementById('tipo_notificacao').value,
+                    contato: document.getElementById('contato').value
+                };
+
+                const response = await fetch(`${API_URL}/monitoramentos`, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify(formData)
+                });
+
+                const data = await response.json();
+
+                if (response.ok) {
+                    alert('Monitoramento criado com sucesso!');
+                    fecharModal();
+                    carregarMonitoramentos();
+                    carregarEstatisticas();
+                } else {
+                    alert(`Erro: ${data.error || 'Não foi possível criar o monitoramento'}`);
+                }
+            } catch (error) {
+                console.error('Erro ao criar monitoramento:', error);
+                alert('Erro ao criar monitoramento. Verifique sua conexão e tente novamente.');
+            } finally {
+                btn.disabled = false;
+                btn.innerHTML = '<span>✨ Criar Monitoramento</span>';
+            }
+        }
+
+        // Variáveis globais para deleção
+        let monitoramentoParaDeletar = null;
+        let codigoVerificacao = '';
+        
+        // Gerar código aleatório de 4 dígitos
+        function gerarCodigoAleatorio() {
+            return Math.floor(1000 + Math.random() * 9000).toString();
+        }
+        
+        // Abrir modal de deleção
+        function deletarMonitoramento(id) {
+            monitoramentoParaDeletar = id;
+            codigoVerificacao = gerarCodigoAleatorio();
+            
+            // Mostrar código
+            document.getElementById('verification-code').textContent = codigoVerificacao;
+            
+            // Limpar input
+            const input = document.getElementById('delete-code-input');
+            input.value = '';
+            input.classList.remove('error');
+            
+            // Abrir modal
+            document.getElementById('delete-modal').classList.add('active');
+            
+            // Focar no input após animação
+            setTimeout(() => input.focus(), 400);
+        }
+        
+        // Fechar modal de deleção
+        function fecharModalDeletar() {
+            document.getElementById('delete-modal').classList.remove('active');
+            monitoramentoParaDeletar = null;
+            codigoVerificacao = '';
+        }
+        
+        // Confirmar deleção
+        async function confirmarDeletar() {
+            const input = document.getElementById('delete-code-input');
+            const codigoDigitado = input.value.trim();
+            
+            // Validar código
+            if (codigoDigitado !== codigoVerificacao) {
+                input.classList.add('error');
+                setTimeout(() => input.classList.remove('error'), 500);
+                input.value = '';
+                input.focus();
+                return;
+            }
+            
+            // Código correto, deletar
+            try {
+                const response = await fetch(`${API_URL}/monitoramentos/${monitoramentoParaDeletar}`, {
+                    method: 'DELETE'
+                });
+
+                if (response.ok) {
+                    fecharModalDeletar();
+                    alert('✓ Monitoramento deletado com sucesso!');
+                    carregarMonitoramentos();
+                    carregarEstatisticas();
+                } else {
+                    const data = await response.json();
+                    alert(`Erro: ${data.error || 'Não foi possível deletar o monitoramento'}`);
+                }
+            } catch (error) {
+                console.error('Erro ao deletar monitoramento:', error);
+                alert('Erro ao deletar monitoramento. Verifique sua conexão e tente novamente.');
+            }
+        }
+        
+        // Fechar modal ao clicar fora
+        document.getElementById('delete-modal').addEventListener('click', (e) => {
+            if (e.target.id === 'delete-modal') {
+                fecharModalDeletar();
+            }
+        });
+        
+        // Permitir Enter no input de código
+        document.getElementById('delete-code-input').addEventListener('keypress', (e) => {
+            if (e.key === 'Enter') {
+                confirmarDeletar();
+            }
+        });
+
+        // Cleanup ao sair da página
+        window.addEventListener('beforeunload', () => {
+            if (autoRefreshInterval) {
+                clearInterval(autoRefreshInterval);
+            }
+        });
+
+        function inicializarTema() {
+            const prefersLight = window.matchMedia && window.matchMedia('(prefers-color-scheme: light)').matches;
+            const savedTheme = localStorage.getItem('kavak-theme');
+            const root = document.documentElement;
+            const switchInput = document.getElementById('theme-switch');
+            const label = document.getElementById('theme-label');
+
+            const aplicarTema = (modoClaro) => {
+                if (modoClaro) {
+                    root.classList.add('light-mode');
+                    label.textContent = 'Modo claro';
+                    switchInput.checked = true;
+                } else {
+                    root.classList.remove('light-mode');
+                    label.textContent = 'Modo escuro';
+                    switchInput.checked = false;
+                }
+            };
+
+            // Padrão é escuro, só muda para claro se preferir ou estiver salvo
+            const temaInicial = savedTheme ? savedTheme === 'light' : prefersLight;
+            aplicarTema(temaInicial);
+
+            switchInput.addEventListener('change', (event) => {
+                const modoClaro = event.target.checked;
+                aplicarTema(modoClaro);
+                localStorage.setItem('kavak-theme', modoClaro ? 'light' : 'dark');
+            });
+        }
+    </script>
+</body>
+</html>

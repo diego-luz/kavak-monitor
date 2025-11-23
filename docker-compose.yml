@@ -1,0 +1,56 @@
+version: '3.8'
+
+services:
+  # Kavak Monitor - Backend + Frontend em um único container
+  app:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: kavak-monitor
+    restart: unless-stopped
+    environment:
+      - TELEGRAM_BOT_TOKEN=${TELEGRAM_BOT_TOKEN}
+      - RECAPTCHA_SECRET_KEY=${RECAPTCHA_SECRET_KEY}
+      - MAX_WORKERS=${MAX_WORKERS:-5}
+      - BATCH_SIZE=${BATCH_SIZE:-50}
+      - REQUEST_TIMEOUT=${REQUEST_TIMEOUT:-5}
+      - CHECK_INTERVAL=${CHECK_INTERVAL:-10}
+      - MAX_MONITORAMENTOS_POR_IP=${MAX_MONITORAMENTOS_POR_IP:-10}
+      - DB_PATH=/app/data/kavak_monitor.db
+      - LOG_PATH=/app/logs/kavak.log
+    ports:
+      - "${PORT:-5004}:5004"
+    volumes:
+      - kavak-data:/app/data
+      - kavak-logs:/app/logs
+    networks:
+      - kavak-network
+    deploy:
+      resources:
+        limits:
+          cpus: '1.0'
+          memory: 320M
+        reservations:
+          cpus: '0.3'
+          memory: 160M
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:5004/health"]
+      interval: 60s
+      timeout: 5s
+      retries: 3
+      start_period: 15s
+
+# Volumes para persistência
+volumes:
+  kavak-data:
+    driver: local
+    name: kavak-data
+  kavak-logs:
+    driver: local
+    name: kavak-logs
+
+# Network isolada
+networks:
+  kavak-network:
+    driver: bridge
+    name: kavak-network

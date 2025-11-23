@@ -1,0 +1,40 @@
+# Git
+.git
+.gitignore
+
+# Docker
+Dockerfile
+docker-compose.yml
+.dockerignore
+
+# Documentação
+*.md
+README.md
+
+# Backend específico
+backend/Dockerfile
+backend/.dockerignore
+
+# Frontend específico
+frontend/Dockerfile
+
+# Logs e dados locais
+*.log
+data/
+logs/
+
+# Python
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+.Python
+env/
+venv/
+ENV/
+
+# IDE
+.vscode/
+.idea/
+*.swp
+*.swo

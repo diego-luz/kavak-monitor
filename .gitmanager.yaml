@@ -1,0 +1,37 @@
+auto_clean: false
+auto_scan: true
+commit_templates:
+  chore: 'chore: {message}'
+  docs: 'docs: {message}'
+  feature: 'feat: {message}'
+  fix: 'fix: {message}'
+  refactor: 'refactor: {message}'
+  test: 'test: {message}'
+custom_patterns: {}
+exclude_dirs:
+- .git
+- node_modules
+- __pycache__
+- venv
+- .venv
+- dist
+- build
+- .idea
+- .vscode
+exclude_files:
+- .env
+- .env.*
+- credentials.json
+- secrets.yaml
+- '*.key'
+- '*.pem'
+- config.local.*
+git:
+  auto_push: false
+  default_branch: main
+  require_message: true
+notifications:
+  commit_success: true
+  sensitive_data_found: true
+project_name: kavak-monitor
+project_type: public

@@ -1,0 +1,488 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Tutorial: Telegram Bot - Kavak Monitor</title>
+    
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700;800&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+
+    <style>
+        :root {
+            /* Modo escuro como padrão - Azul + Preto */
+            --color-primary: #3B82F6;
+            --color-primary-dark: #2563EB;
+            --color-secondary: #60A5FA;
+            --color-accent: #06B6D4;
+            --color-success: #10B981;
+            --color-warning: #F59E0B;
+            --bg-gradient-start: #0F172A;
+            --bg-gradient-mid: #1E293B;
+            --bg-gradient-end: #0C4A6E;
+            --bg-surface: rgba(30, 41, 59, 0.95);
+            --bg-surface-alt: rgba(51, 65, 85, 0.85);
+            --text-primary: #F1F5F9;
+            --text-secondary: #CBD5E1;
+            --text-muted: #94A3B8;
+            --border-color: rgba(59, 130, 246, 0.2);
+            --shadow-sm: 0 4px 16px rgba(59, 130, 246, 0.15);
+            --shadow-md: 0 8px 32px rgba(59, 130, 246, 0.25);
+            --shadow-lg: 0 16px 64px rgba(59, 130, 246, 0.35);
+        }
+
+        .light-mode {
+            /* Modo claro - Branco + Azul */
+            --color-primary: #2563EB;
+            --color-primary-dark: #1D4ED8;
+            --color-secondary: #3B82F6;
+            --color-accent: #0EA5E9;
+            --color-success: #059669;
+            --color-warning: #D97706;
+            --bg-gradient-start: #EFF6FF;
+            --bg-gradient-mid: #DBEAFE;
+            --bg-gradient-end: #BFDBFE;
+            --bg-surface: rgba(255, 255, 255, 0.95);
+            --bg-surface-alt: rgba(249, 250, 251, 0.85);
+            --text-primary: #1E293B;
+            --text-secondary: #475569;
+            --text-muted: #64748B;
+            --border-color: rgba(37, 99, 235, 0.15);
+            --shadow-sm: 0 4px 16px rgba(37, 99, 235, 0.08);
+            --shadow-md: 0 8px 32px rgba(37, 99, 235, 0.12);
+            --shadow-lg: 0 16px 64px rgba(37, 99, 235, 0.18);
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            background: linear-gradient(135deg, var(--bg-gradient-start) 0%, var(--bg-gradient-mid) 50%, var(--bg-gradient-end) 100%);
+            background-attachment: fixed;
+            min-height: 100vh;
+            padding: 2rem 1.5rem;
+            color: var(--text-primary);
+            transition: all 0.6s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+
+        .container {
+            max-width: 900px;
+            margin: 0 auto;
+            background: var(--bg-surface);
+            backdrop-filter: blur(20px);
+            -webkit-backdrop-filter: blur(20px);
+            border-radius: 20px;
+            padding: 2.5rem;
+            box-shadow: var(--shadow-lg);
+            border: 2px solid var(--border-color);
+        }
+
+        .theme-toggle-container {
+            display: flex;
+            justify-content: flex-end;
+            margin-bottom: 1.5rem;
+        }
+
+        .theme-toggle {
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+            color: var(--text-secondary);
+            font-weight: 600;
+            font-size: 0.9rem;
+            background: var(--bg-surface-alt);
+            padding: 0.5rem 1rem;
+            border-radius: 50px;
+            backdrop-filter: blur(10px);
+            border: 2px solid var(--border-color);
+        }
+
+        .switch {
+            position: relative;
+            display: inline-block;
+            width: 50px;
+            height: 26px;
+        }
+
+        .switch input {
+            opacity: 0;
+            width: 0;
+            height: 0;
+        }
+
+        .slider {
+            position: absolute;
+            cursor: pointer;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: linear-gradient(135deg, #E5E7EB, #D1D5DB);
+            transition: 0.4s;
+            border-radius: 34px;
+        }
+
+        .slider:before {
+            position: absolute;
+            content: "";
+            height: 20px;
+            width: 20px;
+            left: 3px;
+            bottom: 3px;
+            background: white;
+            transition: 0.4s;
+            border-radius: 50%;
+        }
+
+        input:checked + .slider {
+            background: linear-gradient(135deg, var(--color-primary), var(--color-secondary));
+        }
+
+        input:checked + .slider:before {
+            transform: translateX(24px);
+        }
+
+        h1 {
+            font-family: 'Poppins', sans-serif;
+            color: var(--text-primary);
+            margin-bottom: 0.5rem;
+            font-size: 2.2em;
+            font-weight: 800;
+            background: linear-gradient(135deg, var(--color-primary) 0%, var(--color-secondary) 100%);
+            -webkit-background-clip: text;
+            background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        .subtitle {
+            color: var(--text-secondary);
+            margin-bottom: 2rem;
+            font-size: 1.1em;
+            line-height: 1.6;
+        }
+
+        .step {
+            margin-bottom: 2.5rem;
+            padding-bottom: 2rem;
+            border-bottom: 2px solid var(--border-color);
+        }
+
+        .step:last-child {
+            border-bottom: none;
+        }
+
+        .step-number {
+            display: inline-block;
+            background: linear-gradient(135deg, var(--color-primary), var(--color-secondary));
+            color: white;
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            text-align: center;
+            line-height: 40px;
+            font-weight: bold;
+            margin-right: 1rem;
+            box-shadow: var(--shadow-sm);
+        }
+
+        .step-title {
+            color: var(--text-primary);
+            font-size: 1.5em;
+            margin-bottom: 1rem;
+            font-weight: 700;
+            font-family: 'Poppins', sans-serif;
+        }
+
+        .step-content {
+            margin-left: 56px;
+            color: var(--text-secondary);
+            line-height: 1.7;
+        }
+
+        .step-content p {
+            margin-bottom: 1rem;
+        }
+
+        .step-content h3 {
+            color: var(--text-primary);
+            font-weight: 700;
+            margin: 1.5rem 0 0.75rem 0;
+        }
+
+        .code-box {
+            background: var(--bg-surface-alt);
+            border-left: 4px solid var(--color-primary);
+            padding: 1rem;
+            margin: 1rem 0;
+            border-radius: 8px;
+            font-family: 'Courier New', monospace;
+            overflow-x: auto;
+            color: var(--text-primary);
+        }
+
+        .code-box code {
+            color: var(--color-accent);
+            font-weight: bold;
+        }
+
+        .highlight {
+            background: rgba(59, 130, 246, 0.2);
+            padding: 2px 6px;
+            border-radius: 4px;
+            font-weight: 600;
+            color: var(--color-primary);
+        }
+
+        .warning {
+            background: rgba(245, 158, 11, 0.1);
+            border-left: 4px solid var(--color-warning);
+            padding: 1rem;
+            margin: 1.5rem 0;
+            border-radius: 8px;
+        }
+
+        .warning strong {
+            color: var(--color-warning);
+        }
+
+        .success {
+            background: rgba(16, 185, 129, 0.1);
+            border-left: 4px solid var(--color-success);
+            padding: 1rem;
+            margin: 1.5rem 0;
+            border-radius: 8px;
+        }
+
+        .success strong {
+            color: var(--color-success);
+        }
+
+        .btn {
+            display: inline-block;
+            padding: 0.75rem 2rem;
+            background: linear-gradient(135deg, var(--color-primary), var(--color-secondary));
+            color: white;
+            text-decoration: none;
+            border-radius: 12px;
+            font-weight: 700;
+            transition: all 0.3s ease;
+            margin-top: 1.5rem;
+            box-shadow: var(--shadow-sm);
+            border: none;
+            cursor: pointer;
+            font-family: 'Poppins', sans-serif;
+        }
+
+        .btn:hover {
+            transform: translateY(-2px);
+            box-shadow: var(--shadow-md);
+        }
+
+        .back-link {
+            margin-bottom: 1.5rem;
+        }
+
+        .back-link a {
+            color: var(--color-primary);
+            text-decoration: none;
+            font-weight: 600;
+            transition: color 0.3s ease;
+        }
+
+        .back-link a:hover {
+            color: var(--color-secondary);
+            text-decoration: underline;
+        }
+
+        ul, ol {
+            margin-left: 1.5rem;
+            margin-bottom: 1rem;
+        }
+
+        ul li, ol li {
+            margin-bottom: 0.75rem;
+            line-height: 1.7;
+            color: var(--text-secondary);
+        }
+
+        @media (max-width: 768px) {
+            body {
+                padding: 1rem;
+            }
+
+            .container {
+                padding: 1.5rem;
+                border-radius: 16px;
+            }
+
+            h1 {
+                font-size: 1.8em;
+            }
+
+            .step-content {
+                margin-left: 0;
+            }
+
+            .step-number {
+                margin-bottom: 0.75rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="theme-toggle-container">
+            <div class="theme-toggle">
+                <span id="theme-label">Modo escuro</span>
+                <label class="switch">
+                    <input type="checkbox" id="theme-switch" />
+                    <span class="slider"></span>
+                </label>
+            </div>
+        </div>
+
+        <div class="back-link">
+            <a href="/">← Voltar para o Kavak Monitor</a>
+        </div>
+
+        <h1>📱 Tutorial: Como Configurar o Telegram Bot</h1>
+        <p class="subtitle">
+            Siga este guia passo a passo para configurar as notificações do Telegram
+        </p>
+
+        <!-- Passo 1 -->
+        <div class="step">
+            <h2 class="step-title">
+                <span class="step-number">1</span>
+                Descobrir seu Chat ID
+            </h2>
+            <div class="step-content">
+                <p>Para receber notificações, você precisa do seu <strong>Chat ID</strong>. Existem duas formas de descobrir:</p>
+
+                <h3>Opção A: Usando o bot GetIDs (Mais Fácil)</h3>
+                <ol>
+                    <li>No Telegram, busque por <span class="highlight">@getidsbot</span></li>
+                    <li>Clique em "Iniciar" ou envie <code>/start</code></li>
+                    <li>O bot vai te enviar automaticamente seu Chat ID</li>
+                    <li>Copie o número (exemplo: 123456789)</li>
+                </ol>
+
+                <h3>Opção B: Usando a API do Telegram</h3>
+                <ol>
+                    <li>Abra seu navegador</li>
+                    <li>Acesse esta URL (substitua SEU_TOKEN pelo token do passo 1):
+                        <div class="code-box">
+                            https://api.telegram.org/bot<code>SEU_TOKEN</code>/getUpdates
+                        </div>
+                    </li>
+                    <li>Procure por <code>"chat":{"id":</code> no texto que aparece</li>
+                    <li>O número que aparece depois é o seu Chat ID</li>
+                </ol>
+
+                <div class="success">
+                    <strong>✓ Pronto!</strong> Agora você tem seu Chat ID. Exemplo: <code>123456789</code>
+                </div>
+            </div>
+        </div>
+
+        <!-- Passo 2 -->
+        <div class="step">
+            <h2 class="step-title">
+                <span class="step-number">2</span>
+                Usar no Kavak Monitor
+            </h2>
+            <div class="step-content">
+                <p>Agora você está pronto para criar monitoramentos com notificações no Telegram!</p>
+
+                <p>Ao criar um novo monitoramento:</p>
+                <ol>
+                    <li>Selecione <strong>"Telegram"</strong> como tipo de notificação</li>
+                    <li>Cole seu <strong>Chat ID</strong> no campo de contato</li>
+                    <li>Pronto! Você receberá notificações quando:
+                        <ul>
+                            <li>O carro for vendido (link sair do ar)</li>
+                            <li>Faltarem 5 dias para o prazo de 45 dias</li>
+                        </ul>
+                    </li>
+                </ol>
+            </div>
+        </div>
+
+        <!-- Troubleshooting -->
+        <div class="step">
+            <h2 class="step-title">
+                <span class="step-number">❓</span>
+                Problemas Comuns
+            </h2>
+            <div class="step-content">
+                <h3>Não recebo notificações</h3>
+                <ul>
+                    <li>Verifique se você enviou pelo menos uma mensagem para o bot</li>
+                    <li>Confirme que o Chat ID está correto (apenas números)</li>
+                    <li>Verifique se o token do bot está configurado corretamente no servidor</li>
+                    <li>Verifique os logs do sistema: <code>docker-compose logs backend</code></li>
+                </ul>
+
+                <h3>Token inválido</h3>
+                <ul>
+                    <li>O token deve ter este formato: <code>123456789:ABCdefGHI...</code></li>
+                    <li>Certifique-se de copiar o token completo do BotFather</li>
+                    <li>Não adicione espaços antes ou depois do token</li>
+                </ul>
+
+                <h3>Chat ID não funciona</h3>
+                <ul>
+                    <li>O Chat ID deve conter apenas números (sem letras ou símbolos)</li>
+                    <li>Pode ser negativo em grupos (exemplo: -123456789)</li>
+                    <li>Tente usar o @getidsbot para confirmar o ID correto</li>
+                </ul>
+            </div>
+        </div>
+
+        <div style="text-align: center; margin-top: 2.5rem;">
+            <a href="/" class="btn">← Voltar para o Kavak Monitor</a>
+        </div>
+    </div>
+
+    <script>
+        // Inicializar tema
+        function inicializarTema() {
+            const prefersLight = window.matchMedia && window.matchMedia('(prefers-color-scheme: light)').matches;
+            const savedTheme = localStorage.getItem('kavak-theme');
+            const root = document.documentElement;
+            const switchInput = document.getElementById('theme-switch');
+            const label = document.getElementById('theme-label');
+
+            const aplicarTema = (modoClaro) => {
+                if (modoClaro) {
+                    root.classList.add('light-mode');
+                    label.textContent = 'Modo claro';
+                    switchInput.checked = true;
+                } else {
+                    root.classList.remove('light-mode');
+                    label.textContent = 'Modo escuro';
+                    switchInput.checked = false;
+                }
+            };
+
+            // Padrão é escuro, só muda para claro se preferir ou estiver salvo
+            const temaInicial = savedTheme ? savedTheme === 'light' : prefersLight;
+            aplicarTema(temaInicial);
+
+            switchInput.addEventListener('change', (event) => {
+                const modoClaro = event.target.checked;
+                aplicarTema(modoClaro);
+                localStorage.setItem('kavak-theme', modoClaro ? 'light' : 'dark');
+            });
+        }
+
+        document.addEventListener('DOMContentLoaded', inicializarTema);
+    </script>
+</body>
+</html>
