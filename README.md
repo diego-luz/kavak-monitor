@@ -63,22 +63,19 @@ Pronto! O sistema está rodando.
 ## 📸 Screenshots
 
 ### Interface Principal
-> **TODO**: Adicionar screenshot da tela inicial do dashboard
 
 ![Dashboard Principal](docs/images/dashboard.png)
 
 ### Criação de Monitoramento
-> **TODO**: Adicionar screenshot do formulário de criação
 
 ![Novo Monitoramento](docs/images/novo-monitoramento.png)
 
 ### Lista de Monitoramentos Ativos
-> **TODO**: Adicionar screenshot da lista de monitoramentos
 
 ![Lista de Monitoramentos](docs/images/lista-monitoramentos.png)
 
 ### Notificação no Telegram
-> **TODO**: Adicionar screenshot da notificação recebida no Telegram
+
 
 ![Notificação Telegram](docs/images/notificacao-telegram.png)
 
